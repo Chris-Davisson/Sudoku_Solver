@@ -3,7 +3,7 @@ import re
 from typing import Dict, Optional
 
 def cross(A, B) -> tuple:
-    return tuple(a + b in A for b in B)
+    return tuple(a + b for a in A for b in B)
 
 Digit     = str  # e.g. '1'
 digits    = '123456789'
@@ -78,6 +78,37 @@ def picture(grid) -> Picture:
     def line(r): return ''.join(cell(r, c) for c in cols)    + (dash3 if r in 'CF' else '')
     return '\n'.join(map(line, rows))
 
-pic1 = "53..7.... 6..195... .98....6. 8...6...3 4..8.3..1 7...2...6 .6....28. ...419..5 ....8..79"
-grid1 = parse(pic1)
-print(picture(grid1))
+def search(grid) -> Grid:
+    "Depth-first search with constraint propagation to find a solution."
+    if grid is None: 
+        return None
+    s = min((s for s in squares if len(grid[s]) > 1), 
+            default=None, key=lambda s: len(grid[s]))
+    if s is None: # No squares with multiple possibilities; the search has succeeded
+        return grid
+    for d in grid[s]:
+        solution = search(fill(grid.copy(), s, d))
+        if solution:
+            return solution
+    return None
+
+def solve_puzzles(puzzles, verbose=True) -> int:
+    "Solve and verify each puzzle, and if `verbose`, print puzzle and solution."
+    for puzzle in puzzles:
+        solution = search(constrain(puzzle))
+        assert is_solution(solution, puzzle)
+        if verbose:
+            print_side_by_side('\nPuzzle:\n' + picture(puzzle), 
+                               '\nSolution:\n' + picture(solution))
+    return len(puzzles)
+
+def print_side_by_side(left, right, width=20):
+    """Print two strings side-by-side, line-by-line, each side `width` wide."""
+    for L, R in zip(left.splitlines(), right.splitlines()):
+        print(L.ljust(width), R.ljust(width))     
+
+
+grid1 = parse("53..7.... 6..195... .98....6. 8...6...3 4..8.3..1 7...2...6 .6....28. ...419..5 ....8..79")
+grid2 = parse("4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......")
+
+solve_puzzles([grid1, grid2])
