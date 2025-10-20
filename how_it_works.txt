@@ -1,3 +1,5 @@
+
+Task 1
 This code works in three main parts.
 
 2 Rules and 1 search
@@ -18,3 +20,37 @@ That's just the constraint propagation. After that fails it performs a DFS with 
 
 
 
+Task 2:
+First improvements: Write the code in a more low level language. Python is slow and large. Stripping the program down to pure C++ structs and logic would improve the speed.
+Real improvements: Add another rule to the constraints. Pairs of pairs. If two peers have the same two options and nothing else, then remove that from all others. Logic says that it must be one or the other. This could function for N number of digits too. It would serve as pruning.
+
+
+Task 3:
+I would say that the code is very readable. Good SOLID principles, no magic numbers. It does use Python functions like zip that I'm not too familar with but that's also just because I am not too familar with Python. Overall this is a very well written bit of code. 
+I would be willing to be on the team, if I felt that I had anything to add. 
+
+Task 4:
+1. The obvious one. Network Firewall Rule config
+    Variables = Each device, user, IP address, port number
+    Domain = Allow, Deny, limit
+    Constraints = Users/IP address should not have access to resources unless authorized. 
+
+    How a CSP solver could solve this: First it would check that all variables have an assignment, allow, deny or limit. Then it would check for any conflicting rules.
+    Weakness: Only conflicting rules would be found. No real security added. 
+
+
+2. Cryptographic key distrobution
+    Variables = Keys, all systems getting keys
+    Domain = All possible keys
+    Constrains = No two parties can have the same keys. All parties must be able to comunicate using the keys. Key transfer must not be readable by any but those sharing the key. All parties must have keys for all other parties. 
+
+    How a CSP solver could solve this: Running the crypto key exchange algorithm but with the constraints in place. So going down the rule set and looking for any two that do not share keys, then removing the current keys as a possibility. 
+    Weakness: Kinda just a key exchange. 
+
+3. Secure resource allocation in multi-tenant cloud enviorments
+    Variables = Virtual machines, storage
+    Domain = All possible division of resources, and isolation levels
+    Constrains = Now two tenants can use the same resources at the same time. Each tenant must recieve minimum requested resources. No tenant will recieve more resources than needed. Tenant isolation will be maintained. 
+
+    How a CSP solver could solve this: First start with allocating all the top priorities with minimum resources they need with full isolation, then as the amount of need increases or decreases you expand or contract as needed. Always with a container that maintains isolation, so if the requested resources would compromise that fail in resourse alocation before failing in isolation.
+    Weakness: This could give slow or lacking service to low priority services. Could cause a backlog. 
