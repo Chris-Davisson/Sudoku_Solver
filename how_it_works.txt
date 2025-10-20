@@ -1,0 +1,20 @@
+This code works in three main parts.
+
+2 Rules and 1 search
+
+First it trys to solve the puzzle using the 2 Rules
+Rule 1: If a box has only one possible value then eleminate that from all peers.
+Rule 2: If a digit can only go in one place, then put it there.
+
+This solves easy puzzles but gets stuck the harder the puzzle gets. That's where the search comes in.
+
+DFS with backtracking.
+It picks the square with the fewest remaining possibilities, tries one value, applies rules 1 & 2. If it leads to a contradiction, backtracks and tries the next value. 
+
+The paper called this the Nishio strategy, but this fits well to the converstion about CSPs. Variables = 81 squares, Domain = 1 - 9, constraints = All Sudoju rules
+When the graph is loaded it solves the node consistency for all the filled spots. It solves arc consistency with rules 1 & 2, and then k consistency is checked when the entire puzzle is solved. 
+
+That's just the constraint propagation. After that fails it performs a DFS with backtracking search. It chooses the one with the minimum number of potentials. MRV minimum remaining values. 
+
+
+
